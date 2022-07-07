@@ -1,0 +1,8 @@
+[
+	{"from": "savings", "to": "trading", "amt": 1000},
+	{"from": "savings", "to": "trading", "amt": 1000},
+	{"from": "savings", "to": "trading", "amt": 2000},
+	{"from": "savings", "to": "trading", "amt": 2000},
+	{"from": "savings", "to": "trading", "amt": 2000},
+	{"from": "savings", "to": "trading", "amt": 5000}
+]
