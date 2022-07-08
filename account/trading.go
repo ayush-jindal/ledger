@@ -1,29 +1,66 @@
 package account
 
-import "fmt"
+import (
+	"fmt"
+	"ledger/equity"
+)
 
-type SavingsAccount struct {
+type TradingAccount struct {
+	id int32
 	holderName string
 	dateOfOpening string
 	interestRate float32
 	transactions []Transaction
 	balance float32
+	demat DematAccount
 }
 
-func OpenSavingsAccount(holderName string) SavingsAccount {
-	return SavingsAccount{holderName, "now", 0, make([]Transaction, 5), 0}
+func OpenTradingAccount(holderName string) TradingAccount {
+	return TradingAccount{0, holderName, "now", 0, make([]Transaction, 0), 0, OpenDematAccount()}
 }
 
-func (sa *SavingsAccount) Deposit(amt float32, from Account, note string) {
-	sa.transactions = append(sa.transactions, DepositTransaction(amt, from, sa, note))
-	sa.balance += amt
+func (ta *TradingAccount) deposit(amt float32, from Account, note string) {
+	ta.transactions = append(ta.transactions, DepositTransaction(amt, from, ta, note))
+	ta.balance += amt
 }
 
-func (sa *SavingsAccount) Withdraw(amt float32, to Account, note string) {
-	sa.transactions = append(sa.transactions, WithdrawTransaction(amt, sa, to, note))
-	sa.balance += amt
+func (ta *TradingAccount) withdraw(amt float32, to Account, note string) {
+	ta.transactions = append(ta.transactions, WithdrawTransaction(amt, ta, to, note))
+	ta.balance -= amt
 }
 
-func (sa *SavingsAccount) Statement() {
-	fmt.Println("Savings Account")
+func (ta *TradingAccount) SharesBuy(qty int32, share equity.Share, xchng equity.Exchange) {
+	price :=  share.GetPrice(xchng)
+	ta.SharesBought(qty, share, price)
+}
+
+func (ta *TradingAccount) SharesBought(qty int32, share equity.Share, price float32) {
+	amt :=  float32(qty)*price
+	ta.withdraw(amt, globalAccount, share.GetDetails())
+	ta.balance -= amt
+	ta.demat.Deposit(qty, share)
+}
+
+func (ta *TradingAccount) SharesSell(qty int32, share equity.Share, xchng equity.Exchange) {
+	price := share.GetPrice(xchng)
+	ta.SharesSold(qty, share, price)
+}
+
+func (ta *TradingAccount) SharesSold(qty int32, share equity.Share, price float32) {
+	amt := float32(qty)*price
+	ta.deposit(amt, globalAccount, share.GetDetails())
+	ta.balance += amt
+	ta.demat.Withdraw(qty, share)
+}
+
+func (ta *TradingAccount) accountHolderSummary() string {
+	return "Trading " + ta.holderName
+}
+
+func (ta *TradingAccount) Statement() {
+	fmt.Println("***********Trading Account*********")
+	for _, v := range ta.transactions {
+		v.PrintTransaction()
+	}
+	fmt.Printf("Balance: %g\n", ta.balance)
 }

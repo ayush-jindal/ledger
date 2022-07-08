@@ -1,29 +1,29 @@
 package account
 
-import "fmt"
+import (
+	"fmt"
+	"ledger/equity"
+)
 
-type SavingsAccount struct {
-	holderName string
-	dateOfOpening string
-	interestRate float32
-	transactions []Transaction
-	balance float32
+type DematAccount struct {
+	shares map[equity.Share]int32
 }
 
-func OpenSavingsAccount(holderName string) SavingsAccount {
-	return SavingsAccount{holderName, "now", 0, make([]Transaction, 5), 0}
+
+func OpenDematAccount() DematAccount {
+	return DematAccount{make(map[equity.Share]int32)}
 }
 
-func (sa *SavingsAccount) Deposit(amt float32, from Account, note string) {
-	sa.transactions = append(sa.transactions, DepositTransaction(amt, from, sa, note))
-	sa.balance += amt
+func (da *DematAccount) Deposit(qty int32, share equity.Share) {
+	val := da.shares[share]
+	da.shares[share] = val+qty
 }
 
-func (sa *SavingsAccount) Withdraw(amt float32, to Account, note string) {
-	sa.transactions = append(sa.transactions, WithdrawTransaction(amt, sa, to, note))
-	sa.balance += amt
+func (da *DematAccount) Withdraw(qty int32, share equity.Share) {
+	val := da.shares[share]
+	da.shares[share] = val-qty
 }
 
-func (sa *SavingsAccount) Statement() {
-	fmt.Println("Savings Account")
+func (da *DematAccount) Statement() {
+	fmt.Println("Demat Account")
 }

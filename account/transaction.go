@@ -27,8 +27,10 @@ func newTransaction(amt float32, from, to Account, note string, debit bool) Tran
 
 func (t Transaction) PrintTransaction() {
 	if t.debit {
-		fmt.Printf("Withdrew %g for %s\n", t.amt, t.to)
+		fmt.Printf("Withdrew %g for %s", t.amt, t.to.accountHolderSummary())
+		fmt.Printf("\nRemarks: '%s'\n", t.note)
 	} else {
-		fmt.Printf("Received %g from %s\n", t.amt, t.from)
+		fmt.Printf("Received %g from %s", t.amt, t.from.accountHolderSummary())
+		fmt.Printf("\nRemarks: '%s'\n", t.note)
 	}
 }
