@@ -1,5 +1,8 @@
 package equity
 
 type Exchange struct {
-	xchng string
+	
 }
+
+var NSE Exchange = Exchange{}
+var BSE Exchange = Exchange{}

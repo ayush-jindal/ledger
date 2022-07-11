@@ -1,16 +1,20 @@
 package equity
 
+type ISIN int32
+
 type Share struct {
-	id string
+	id ISIN
 	name string
 }
 
-func NewShare(id, name string) Share {
-	return Share{id, name}
+func NewShare(name string) Share {
+	return Share{0, name}
 }
 
+func (s Share) GetID() ISIN { return s.id; }
+
 func (s Share) GetPrice(xchng Exchange) float32 {
-	return 0
+	return 100
 }
 
 func (s Share) GetDetails() string {

@@ -36,7 +36,7 @@ func (ta *TradingAccount) SharesBuy(qty int32, share equity.Share, xchng equity.
 
 func (ta *TradingAccount) SharesBought(qty int32, share equity.Share, price float32) {
 	amt :=  float32(qty)*price
-	ta.withdraw(amt, globalAccount, share.GetDetails())
+	ta.withdraw(amt, globalAccount, fmt.Sprintf("%d %s shares @ %g", qty, share.GetDetails(), price))
 	ta.balance -= amt
 	ta.demat.Deposit(qty, share)
 }
@@ -48,7 +48,7 @@ func (ta *TradingAccount) SharesSell(qty int32, share equity.Share, xchng equity
 
 func (ta *TradingAccount) SharesSold(qty int32, share equity.Share, price float32) {
 	amt := float32(qty)*price
-	ta.deposit(amt, globalAccount, share.GetDetails())
+	ta.deposit(amt, globalAccount, fmt.Sprintf("%d %s shares @ %g", qty, share.GetDetails(), price))
 	ta.balance += amt
 	ta.demat.Withdraw(qty, share)
 }

@@ -2,8 +2,9 @@ package main
 
 import (
 	acc "ledger/account"
+	eQT "ledger/equity"
+	"fmt"
 )
-
 
 func main() {
 	sa := acc.OpenSavingsAccount("Ayush")
@@ -17,6 +18,14 @@ func main() {
 	ta := acc.OpenTradingAccount("Ayush")
 	acc.Transfer(5000, &sa, &ta, "Initial investment")
 	acc.Transfer(200, &ta, &sa, "Returns")
+	sa.Statement()
+	ta.Statement()
+	
+	share := eQT.NewShare("Adani")
+	fmt.Println(share.GetDetails())
+	fmt.Println(share.GetPrice(eQT.NSE))
+
+	ta.SharesBuy(1000, share, eQT.NSE)
 	sa.Statement()
 	ta.Statement()
 }
